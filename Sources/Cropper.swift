@@ -1,6 +1,7 @@
 import Foundation
 import AppKit
 import CoreGraphics
+import UniformTypeIdentifiers
 
 // MARK: - 方形裁切与导出
 // 图库里的图什么比例都有，头像要 1:1。这里在本地做裁切，不依赖任何服务端：
@@ -56,6 +57,28 @@ enum Cropper {
     static func savePNG(_ image: NSImage, tag: String) throws -> URL {
         guard let data = pngData(image) else { throw AppError("图片编码 PNG 失败") }
         let url = Output.newFileURL(tag: tag)
+        try data.write(to: url)
+        return url
+    }
+
+    /// 直接写盘失败时的兜底：弹「存储为」面板让用户自己挑位置。
+    ///
+    /// 为什么需要这条退路：本 app 是 ad-hoc 签名，每跑一次 build.sh 代码标识就变一次，
+    /// 系统之前授予的「访问桌面」授权会跟着作废。而 LSUIElement 应用没有 Dock 图标，
+    /// 重新授权的弹窗未必抢得到焦点，结果就是写盘被静默拒绝、用户完全不知道发生了什么。
+    /// 「存储为」面板走的是系统 powerbox，用户选中的位置天然带授权，绕开 TCC。
+    /// 返回 nil 表示用户主动点了取消。
+    @discardableResult
+    static func savePNGWithPanel(_ image: NSImage, tag: String) throws -> URL? {
+        guard let data = pngData(image) else { throw AppError("图片编码 PNG 失败") }
+        // 菜单栏应用默认不是前台，不激活的话面板会藏到别的窗口后面。
+        NSApp.activate(ignoringOtherApps: true)
+        let panel = NSSavePanel()
+        panel.title = "保存头像"
+        panel.nameFieldStringValue = Output.newFileURL(tag: tag).lastPathComponent
+        panel.allowedContentTypes = [.png]
+        panel.canCreateDirectories = true
+        guard panel.runModal() == .OK, let url = panel.url else { return nil }
         try data.write(to: url)
         return url
     }

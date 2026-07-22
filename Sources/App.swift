@@ -11,7 +11,10 @@ struct AvatarLabApp: App {
     @StateObject private var search = SearchModel()
 
     var body: some Scene {
-        MenuBarExtra("AvatarLab", systemImage: "person.crop.square.badge.magnifyingglass") {
+        // 图标必须选 SF Symbols 早期就有、且 macOS 13 一定存在的名字。
+        // 之前用的 person.crop.square.badge.magnifyingglass 压根不存在，
+        // MenuBarExtra 拿到 nil 就画了一块空白——图标"隐身"，只剩一块看不见的可点区域。
+        MenuBarExtra("AvatarLab", systemImage: "person.crop.square") {
             RootView(search: search)
         }
         .menuBarExtraStyle(.window)

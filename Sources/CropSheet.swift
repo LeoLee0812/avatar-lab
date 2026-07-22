@@ -77,12 +77,14 @@ struct CropPane: View {
             }
 
             HStack(spacing: 8) {
-                Button("存到桌面", action: { save(reveal: false) })
+                // 存完直接在访达里选中文件：浮窗一失焦就关，底部那行状态文字根本来不及看，
+                // 加上图是落在「桌面/AvatarLab/」子文件夹里，光看桌面会以为没存上。
+                Button("存到桌面", action: { save(reveal: true) })
                     .buttonStyle(.borderedProminent)
                     .keyboardShortcut(.return, modifiers: [])
                 Button("复制", action: copy)
                     .keyboardShortcut("c", modifiers: .command)
-                Button("在访达显示", action: { save(reveal: true) })
+                Button("打开文件夹", action: { NSWorkspace.shared.open(Output.folder) })
             }
             .controlSize(.small)
 
@@ -139,8 +141,20 @@ struct CropPane: View {
             isError = false
             if reveal { NSWorkspace.shared.activateFileViewerSelecting([url]) }
         } catch {
-            status = "保存失败：\(error.localizedDescription)"
-            isError = true
+            // 直接写桌面失败，多半是系统权限拦的，退到「存储为」面板让用户挑位置。
+            do {
+                guard let url = try Cropper.savePNGWithPanel(img, tag: subject.tag) else {
+                    status = "已取消保存"
+                    isError = false
+                    return
+                }
+                status = "已存到 \(url.lastPathComponent)"
+                isError = false
+                if reveal { NSWorkspace.shared.activateFileViewerSelecting([url]) }
+            } catch let fallbackError {
+                status = "保存失败：\(fallbackError.localizedDescription)"
+                isError = true
+            }
         }
     }
 }
