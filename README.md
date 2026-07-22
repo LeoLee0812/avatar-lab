@@ -5,6 +5,8 @@
 [![SwiftUI](https://img.shields.io/badge/SwiftUI-native-0A84FF?style=flat-square&logo=swift&logoColor=white)](https://developer.apple.com/xcode/swiftui/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 [![Last commit](https://img.shields.io/github/last-commit/LeoLee0812/avatar-lab?style=flat-square&logo=github)](https://github.com/LeoLee0812/avatar-lab/commits)
+[![Release](https://img.shields.io/github/v/release/LeoLee0812/avatar-lab?style=flat-square&logo=github&color=blue)](https://github.com/LeoLee0812/avatar-lab/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/LeoLee0812/avatar-lab/total?style=flat-square&logo=github)](https://github.com/LeoLee0812/avatar-lab/releases)
 
 手机上传头像很轻松，相册里翻两下就有；电脑上要传个头像，往往翻遍硬盘也找不出一张像样的方图。
 
@@ -52,12 +54,29 @@ AvatarLab 是一个**常驻菜单栏的轻量小工具**：点一下图标，浮
 
 ## 安装
 
+### 方式一：下载 DMG（推荐）
+
+到 [Releases](https://github.com/LeoLee0812/avatar-lab/releases/latest) 下载 `AvatarLab-x.y.z.dmg`，打开后把 `AvatarLab.app` 拖进 `Applications`。
+
+App 是 ad-hoc 本地签名（没交 Apple 开发者年费），从网上下载的包会被 Gatekeeper 拦一道，两种解法任选：
+
+- 右键 App →「打开」→ 再点一次「打开」；
+- 或者终端里去掉隔离属性：
+
+```bash
+xattr -dr com.apple.quarantine /Applications/AvatarLab.app
+```
+
+### 方式二：自己编译
+
 ```bash
 git clone https://github.com/LeoLee0812/avatar-lab.git
 cd avatar-lab
 ./build.sh                          # 编译并打包成 build/AvatarLab.app
 cp -R "build/AvatarLab.app" /Applications/
 open "/Applications/AvatarLab.app"   # 图标出现在菜单栏，没有 Dock 图标
+
+./make_dmg.sh 1.0.0                  # 顺手打个 DMG（可选）
 ```
 
 要求 macOS 13+、已装 Xcode 命令行工具（`xcode-select --install`）。ad-hoc 本地签名，首次打开若被 Gatekeeper 拦，右键 →「打开」。
@@ -89,6 +108,7 @@ Sources/
   SearchView.swift    搜图页    GenerateView.swift  生成页
   CropSheet.swift     裁切面板  SettingsView.swift  设置
 build.sh              编译 + 打包 + ad-hoc 签名
+make_dmg.sh           打成可拖拽安装的 DMG
 ```
 
 ## 许可
