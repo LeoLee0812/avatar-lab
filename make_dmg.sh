@@ -5,7 +5,8 @@ set -e
 cd "$(dirname "$0")"
 
 APP_NAME="AvatarLab"
-VERSION="${1:-1.0.0}"
+# 默认从 build.sh 读版本号，保证 DMG 文件名和 app 里的版本号不会对不上
+VERSION="${1:-$(grep -m1 '^VERSION=' build.sh | cut -d'"' -f2)}"
 APP="build/$APP_NAME.app"
 STAGE="build/dmg"
 DMG="build/$APP_NAME-$VERSION.dmg"

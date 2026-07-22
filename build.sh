@@ -5,6 +5,8 @@ cd "$(dirname "$0")"
 
 APP_NAME="AvatarLab"
 BUNDLE_ID="com.avatarlab.app"
+# 版本号只在这里改一处，Info.plist 和 make_dmg.sh 都读它
+VERSION="1.0.1"
 BUILD_DIR="build"
 APP_DIR="$BUILD_DIR/$APP_NAME.app"
 MACOS_DIR="$APP_DIR/Contents/MacOS"
@@ -36,8 +38,8 @@ cat > "$APP_DIR/Contents/Info.plist" <<PLIST
   <key>CFBundleExecutable</key><string>$APP_NAME</string>
   <key>CFBundleIconFile</key><string>AppIcon</string>
   <key>CFBundleIdentifier</key><string>$BUNDLE_ID</string>
-  <key>CFBundleVersion</key><string>1.0</string>
-  <key>CFBundleShortVersionString</key><string>1.0</string>
+  <key>CFBundleVersion</key><string>$VERSION</string>
+  <key>CFBundleShortVersionString</key><string>$VERSION</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>LSMinimumSystemVersion</key><string>13.0</string>
   <key>LSUIElement</key><true/>
