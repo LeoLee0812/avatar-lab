@@ -1,0 +1,11 @@
+# 构建产物
+build/
+*.app
+
+# 图标生成的中间文件（底图/接口返回，不入库）
+Resources/icon_raw.png
+Resources/icon_1024.png
+Resources/resp.json
+
+# 系统
+.DS_Store
