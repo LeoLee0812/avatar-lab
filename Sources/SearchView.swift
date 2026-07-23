@@ -58,6 +58,8 @@ final class SearchModel: ObservableObject {
     func shuffle() {
         if let theme = lastRandomTheme {
             random(theme: theme)
+        } else if photos.isEmpty || query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            random(theme: .anyTheme)
         } else {
             page += 1
             load(keyword: query, page: page, note: nil)
